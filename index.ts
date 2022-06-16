@@ -1,5 +1,6 @@
 import { BlockChain } from '@core/index'
-import { P2PServer } from './src/serve/p2p'
+import { P2PServer, Message, MessageType } from './src/serve/p2p'
+import peers from './peer.json'
 import express from 'express'
 
 const app = express()
@@ -21,6 +22,11 @@ app.post('/mineBlock', (req, res) => {
     const { data } = req.body
     const newBlock = ws.addBlock(data)
     if (newBlock.isError) return res.status(500).json(newBlock.error)
+    const msg: Message = {
+        type: MessageType.latest_block,
+        payload: {},
+    }
+    ws.broadcast(msg)
     res.json(newBlock.value)
 })
 // ws
@@ -28,6 +34,17 @@ app.post('/addToPeer', (req, res) => {
     const { peer } = req.body
     console.log(peer)
     ws.connectToPeer(peer)
+})
+app.get('/blockServer/:text', (req, res) => {
+    const { text } = req.body
+
+    ws.searchData(text)
+})
+
+app.get('/addPeers', (req, res) => {
+    peers.forEach((peer) => {
+        ws.connectToPeer(peer)
+    })
 })
 // peer 확인
 app.get('/peers', (req, res) => {
