@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Wallet😎</title>
+</head>
+<body>
+    <h1>hello world!</h1>
+    <button id="wallet_btn">지갑 생성</button>
+
+    <ul id="wallet_list">
+        <li>Coin : ingCoin</li>
+        <li>account :
+            <span class="account"></span>
+        </li>
+        <li>private key:
+            <span class="private"></span>
+        </li>
+        <li>public key :
+            <span class="publicKey"></span>
+        </li>
+        <li>balance :
+            <span class="balance"></span>
+        </li>
+    </ul>
+    <script type="text/javascript">
+        const walletBtn = document.querySelector('#wallet_btn')
+        const createWallet = async () => {
+            const response = await axios.post('/newWallet',null)
+            console.log(response.data)
+        }
+        walletBtn.addEventListener('click',createWallet)
+    </script>
+</body>
+</html>

@@ -9,6 +9,20 @@ const ws = new P2PServer()
 
 app.use(express.json())
 
+// http://web7722:1234@localhost:3000
+app.use((req, res, next) => {
+    const baseAuth: string = (req.headers.authorization || '').split(' ')[1]
+    console.log(req.headers.authorization)
+    console.log(baseAuth)
+
+    if (baseAuth === '') return res.status(401).send()
+
+    const [userid, userpw] = Buffer.from(baseAuth, 'base64').toString().split(':')
+    if (userid !== 'web7722' || userpw !== '1234') return res.status(401).send()
+
+    next()
+})
+
 app.get('/', (req, res) => {
     res.send('hellO?')
 })
@@ -35,11 +49,11 @@ app.post('/addToPeer', (req, res) => {
     console.log(peer)
     ws.connectToPeer(peer)
 })
-app.get('/blockServer/:text', (req, res) => {
-    const { text } = req.body
-
-    ws.searchData(text)
-})
+// app.get('/blockServer/:text', (req, res) => {
+//     const { text } = req.body
+//
+//     ws.searchData(text)
+// })
 
 app.get('/addPeers', (req, res) => {
     peers.forEach((peer) => {
