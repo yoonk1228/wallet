@@ -12,7 +12,7 @@ nunjucks.configure('views', {
 })
 
 app.get('/', (req, res) => {
-    res.render('index')
+    res.render('index', { data: new Wallet() })
 })
 
 app.post('/newWallet', (req, res) => {
