@@ -24,13 +24,37 @@
             <span class="balance">{{data.balance}}</span>
         </li>
     </ul>
+
+    <h1>Transaction</h1>
+    <form id='transaction_form'>
+        <ul>
+            <li>
+                To (받는 사람): <input id='to' />
+            </li>
+            <li>
+                From (보내는 사람): <input id='from' />
+            </li>
+            <li>
+                Value (보낼 돈): <input id='value' />
+            </li>
+        </ul>
+        <input type='submit' value='전송'/>
+    </form>
     <script type="text/javascript">
         const walletBtn = document.querySelector('#wallet_btn')
+        const transactionForm = document.querySelector('#transaction_form')
         const createWallet = async () => {
             const response = await axios.post('/newWallet',null)
             console.log(response.data)
         }
+        const submitHandler = async(e) => {
+            e.preventDefault()
+            console.log(e.target.to.value)
+            console.log(e.target.from.value)
+            console.log(e.target.value.value)
+        }
         walletBtn.addEventListener('click',createWallet)
+        transactionForm.addEventListener('submit',submitHandler)
     </script>
 </body>
 </html>
