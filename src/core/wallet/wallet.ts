@@ -47,7 +47,7 @@ export class Wallet {
         // todo : 타원곡선 알고리즘 사용 (검증해야되니까)
         const keyPair = ec.keyFromPublic(_receivedTx.sender, 'hex')
         const isVerify = keyPair.verify(hash, _receivedTx.signature)
-        console.log(isVerify)
+        console.log('검증 결과', isVerify)
         if (!isVerify) return { isError: true, error: '서명이 올바르지 않습니다.' } // 서명 내용이 바뀌었다
 
         return { isError: false, value: undefined }

@@ -51,7 +51,7 @@ app.post('/wallet/:account', (req, res) => {
 
 // sendTransaction
 app.post('/sendTransaction', async (req, res) => {
-    console.log(req.body)
+    console.log('req.body :', req.body)
     const {
         sender: { account, publicKey },
         received,
@@ -66,7 +66,7 @@ app.post('/sendTransaction', async (req, res) => {
         amount: amount,
         signature,
     }
-    console.log(txObject)
+    console.log('txObject: ', txObject)
     const response = await request.post('/sendTransaction', txObject)
     console.log(response.data)
 
