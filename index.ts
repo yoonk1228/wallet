@@ -3,6 +3,7 @@ import { BlockChain } from '@core/index'
 import { P2PServer, Message, MessageType } from './src/serve/p2p'
 import peers from './peer.json'
 import express from 'express'
+import { ReceivedTx, Wallet } from '@core/wallet/wallet'
 
 const app = express()
 const bc = new BlockChain()
@@ -62,6 +63,14 @@ app.get('/addPeers', (req, res) => {
     })
 })
 app.post('/sendTransaction', (req, res) => {
+    console.log(req.body)
+    // Wallet.sendTransaction()
+    try {
+        const receivedTx: ReceivedTx = req.body
+        Wallet.sendTransaction(receivedTx)
+    } catch (e) {
+        if (e instanceof Error) console.error(e.message)
+    }
     res.json([])
 })
 // peer 확인
