@@ -1,3 +1,4 @@
+// 블록체인 웹서버
 import { BlockChain } from '@core/index'
 import { P2PServer, Message, MessageType } from './src/serve/p2p'
 import peers from './peer.json'
@@ -60,12 +61,15 @@ app.get('/addPeers', (req, res) => {
         ws.connectToPeer(peer)
     })
 })
+app.post('/sendTransaction', (req, res) => {
+    res.json([])
+})
 // peer 확인
 app.get('/peers', (req, res) => {
     const sockets = ws.getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort)
     res.json(sockets)
 })
 app.listen(3000, () => {
-    console.log('서버시작 3000')
+    console.log('블록체인 웹서버 시작', 3000)
     ws.listen()
 })

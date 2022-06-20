@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto'
 import elliptic from 'elliptic'
 import fs from 'fs'
 import path from 'path'
+import { SHA256 } from 'crypto-js'
 
 const dir = path.join(__dirname, '../data')
 
@@ -31,12 +32,29 @@ export class Wallet {
         fs.writeFileSync(filename, filecontent)
     }
 
-    static getWalletList(): string[] {
+    public static getWalletList(): string[] {
         const files: string[] = fs.readdirSync(dir)
         return files
     }
 
-    static getWalletPrivateKey(_account: string): string {
+    public static createSign(_obj: any) {
+        const {
+            sender: { account, publicKey },
+            received,
+            amount,
+        } = _obj
+
+        // hash
+        const hash: string = SHA256([publicKey, received, amount].join('')).toString()
+
+        // privateKey
+        const privateKey: string = Wallet.getWalletPrivateKey(account)
+
+        const keyPair: elliptic.ec.KeyPair = ec.keyFromPrivate(privateKey)
+        return keyPair.sign(hash, 'hex')
+    }
+
+    public static getWalletPrivateKey(_account: string): string {
         const filepath = path.join(dir, _account)
         const filecontent = fs.readFileSync(filepath)
         return filecontent.toString()

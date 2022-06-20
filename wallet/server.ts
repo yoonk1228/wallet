@@ -1,10 +1,23 @@
 import express from 'express'
 import nunjucks from 'nunjucks'
 import { Wallet } from './wallet'
+import axios from 'axios'
 
 const app = express()
 
-// axios
+const userid = process.env.USERID || 'web7722'
+const userpw = process.env.USERPW || '1234'
+const baseurl = process.env.BASEURL || 'http:/localhost:3000'
+
+const baseAuth = Buffer.from(userid + ':' + userpw).toString('base64')
+
+const request = axios.create({
+    baseURL: 'http://localhost:3000',
+    headers: {
+        Authorization: 'Basic ' + baseAuth,
+        'Content-type': 'application/json',
+    },
+})
 
 app.use(express.json())
 app.set('view engine', 'html')
@@ -37,8 +50,26 @@ app.post('/wallet/:account', (req, res) => {
 })
 
 // sendTransaction
-app.post('/sendTransaction', (req, res) => {
+app.post('/sendTransaction', async (req, res) => {
     console.log(req.body)
+    const {
+        sender: { account, publicKey },
+        received,
+        amount,
+    } = req.body
+    // 서명 만들떄 필요한값 : 공개키 + 계정 + 보낼양
+    const signature = Wallet.createSign(req.body)
+    // 보낼사람: 공개키, 받는사람: 계정, 보낼양, 서명
+    const txObject = {
+        sender: publicKey,
+        received: received,
+        amount: amount,
+        signature,
+    }
+    console.log(txObject)
+    const response = await request.post('/sendTransaction', txObject)
+    console.log(response.data)
+
     res.json({})
 })
 
