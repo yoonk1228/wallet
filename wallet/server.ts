@@ -37,7 +37,10 @@ app.post('/wallet/:account', (req, res) => {
 })
 
 // sendTransaction
-app.post('/sendTransaction', (req, res) => {})
+app.post('/sendTransaction', (req, res) => {
+    console.log(req.body)
+    res.json({})
+})
 
 app.listen(3005, () => {
     console.log('지갑 서버 시작', 3005)
