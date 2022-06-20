@@ -4,6 +4,8 @@ import { Wallet } from './wallet'
 
 const app = express()
 
+// axios
+
 app.use(express.json())
 app.set('view engine', 'html')
 nunjucks.configure('views', {
@@ -18,6 +20,24 @@ app.get('/', (req, res) => {
 app.post('/newWallet', (req, res) => {
     res.json(new Wallet())
 })
+
+// list
+app.post('/walletList', (req, res) => {
+    console.log('wallet list')
+    const list = Wallet.getWalletList() // string
+    res.json(list)
+})
+
+// view
+app.post('/wallet/:account', (req, res) => {
+    const { account } = req.params
+    console.log('wallet/:account', account)
+    const privateKey = Wallet.getWalletPrivateKey(account) // privateKey
+    res.json(new Wallet(privateKey))
+})
+
+// sendTransaction
+app.post('/sendTransaction', (req, res) => {})
 
 app.listen(3005, () => {
     console.log('지갑 서버 시작', 3005)

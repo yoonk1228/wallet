@@ -9,13 +9,13 @@
     <h1>hello world!</h1>
     <button id="wallet_btn">지갑 생성</button>
 
-    <ul id="wallet_list">
+    <ul class="wallet_list">
         <li>Coin : ingCoin</li>
         <li>account :
             <span class="account">{{data.account}}</span>
         </li>
         <li>private key:
-            <span class="private">{{data.privateKey}}</span>
+            <span class="privateKey">{{data.privateKey}}</span>
         </li>
         <li>public key :
             <span class="publicKey">{{data.publicKey}}</span>
@@ -24,36 +24,87 @@
             <span class="balance">{{data.balance}}</span>
         </li>
     </ul>
-
-    <h1>Transaction</h1>
-    <form id='transaction_form'>
+    <form id='"transaction_form'>
         <ul>
-            <li>
-                To (받는 사람): <input id='to' />
-            </li>
-            <li>
-                From (보내는 사람): <input id='from' />
-            </li>
-            <li>
-                Value (보낼 돈): <input id='value' />
-            </li>
+            <li>received : <input id='recevied' placeholder='보낼 계정'/></li>
+            <li>amount : <input id='amount' placeholder='보낼 금액'/></li>
         </ul>
-        <input type='submit' value='전송'/>
     </form>
+
+    <h1>지갑목록</h1>
+    <button id='wallet_list_btn'>지갑목록 버튼</button>
+    <div class='wallet_list2'>
+        <ul>
+
+        </ul>
+        <form id='transaction_form'>
+            <ul>
+                <li>
+                    To (받는 사람): <input id='to' />
+                </li>
+                <li>
+                    From (보내는 사람): <input id='from' />
+                </li>
+                <li>
+                    Value (보낼 돈): <input id='value' />
+                </li>
+            </ul>
+            <input type='submit' value='전송'/>
+        </form>
+    </div>
     <script type="text/javascript">
         const walletBtn = document.querySelector('#wallet_btn')
+        const walletListBtn = document.querySelector('#wallet_list_btn')
         const transactionForm = document.querySelector('#transaction_form')
         const createWallet = async () => {
             const response = await axios.post('/newWallet',null)
             console.log(response.data)
+            view(response.data)
         }
         const submitHandler = async(e) => {
             e.preventDefault()
-            console.log(e.target.to.value)
-            console.log(e.target.from.value)
-            console.log(e.target.value.value)
+            // account
+            // publicKey
+            const publicKey = document.querySelector('.publicKey').innerHTML
+            const account = document.querySelector('.account').innerHTML
+            const data = {
+                sender: {
+                    publicKey,
+                    account
+                },
+                received: e.target.received.value,
+                amount: parseInt(e.target.amount.value)
+            }
+            const response = await axios.post('/sendTransaction',data)
+        }
+        const view = (wallet) => {
+            const account = document.querySelector('.account')
+            const publicKey = document.querySelector('.publicKey')
+            const privateKey = document.querySelector('.privateKey')
+            const balance = document.querySelector('.balance')
+
+            account.innerHTML = wallet.account
+            publicKey.innerHTML = wallet.publicKey
+            privateKey.innerHTML = wallet.privateKey
+            balance.innerHTML = wallet.balance
+        }
+        const getView = async (account) => {
+            const response = await axios.post(`/wallet/${account}`)
+            view(response.data)
+        }
+        const getWalletList = async () => {
+            const walletList = document.querySelector('.wallet_list2 > ul')
+            const response = await axios.post('/walletList',null)
+
+            const list = response.data.map((account)=>{
+                console.log ('월렛리스트 res',account)
+                return `<li onClick=getView('${account}')>${account}</li>`
+            })
+
+            walletList.innerHTML = list
         }
         walletBtn.addEventListener('click',createWallet)
+        walletListBtn.addEventListener('click',getWalletList)
         transactionForm.addEventListener('submit',submitHandler)
     </script>
 </body>

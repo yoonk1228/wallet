@@ -1,5 +1,9 @@
 import { randomBytes } from 'crypto'
 import elliptic from 'elliptic'
+import fs from 'fs'
+import path from 'path'
+
+const dir = path.join(__dirname, '../data')
 
 const ec = new elliptic.ec('secp256k1')
 
@@ -9,11 +13,33 @@ export class Wallet {
     public publicKey: string
     public balance: number
 
-    constructor() {
-        this.privateKey = this.getPrivateKey()
+    constructor(_privateKey: string = '') {
+        this.privateKey = _privateKey || this.getPrivateKey()
+        // this.privateKey = this.getPrivateKey()
         this.publicKey = this.getPublicKey()
         this.account = this.getAccount()
         this.balance = 0
+
+        Wallet.createWallet(this)
+    }
+
+    public static createWallet(_myWallet: Wallet) {
+        const filename = path.join(dir, _myWallet.account)
+        const filecontent = _myWallet.getPrivateKey()
+        // 파일명 : account
+        // 내용 : privateKey
+        fs.writeFileSync(filename, filecontent)
+    }
+
+    static getWalletList(): string[] {
+        const files: string[] = fs.readdirSync(dir)
+        return files
+    }
+
+    static getWalletPrivateKey(_account: string): string {
+        const filepath = path.join(dir, _account)
+        const filecontent = fs.readFileSync(filepath)
+        return filecontent.toString()
     }
 
     public getPrivateKey(): string {
