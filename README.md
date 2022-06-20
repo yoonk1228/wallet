@@ -27,12 +27,12 @@ tsconfig.json 필요
 ```
 npx tsc --build
 
-**index.ts**
+### **index.ts**
 ```typescript
 import { a } from "@core/utils.ts"
 ```
 
-**utils.ts**
+### **utils.ts**
 ```typescript
 export const a = 10
 ```
@@ -52,23 +52,23 @@ package.json 에 script 추가
 16진수 -> 2진수
 npm install hex-to-binary
 
-**tsconfig.json 에 환경설정 속성을 잘 체크하자! (공부하라는 뜻)**
+### **tsconfig.json 에 환경설정 속성을 잘 체크하자! (공부하라는 뜻)**
 
-**eslint, prettier 설정**
+### **eslint, prettier 설정**
 ```
 npm install -D eslint prettier eslint-plugin-prettier eslint-config-prettier
 ```
 .eslintrc
 .prettierrc
 
-**.eslintrc**
+### **.eslintrc**
 ```json
 {
   "extends": ["plugin:prettier/recommended"]
 }
 ```
 
-**.prettierrc**
+### **.prettierrc**
 ```json
 {
   "printWidth": 120,
@@ -80,7 +80,7 @@ npm install -D eslint prettier eslint-plugin-prettier eslint-config-prettier
 ```
 
 
-**테스트코드 작성하는 프레임워크**
+### **테스트코드 작성하는 프레임워크**
 OOP
 작은것 부터 만들면서 큰거를 만들기
 
@@ -95,7 +95,7 @@ $ npm install -D ts-jest @types/jest babel-core
 $ npm install -D @babel/preset-typescript @babel/preset-env
 ```
 
-**babel.config.js**
+### **babel.config.js**
 ```javascript
 module.exports = {
     presets: [
@@ -107,7 +107,7 @@ module.exports = {
 }
 ```
 
-**jest.config.ts**
+### **jest.config.ts**
 ```typescript
 import type { Config }  from '@jest/types'
 const config: Config.InitialOptions = {
@@ -116,7 +116,7 @@ const config: Config.InitialOptions = {
 ```
 
 
-**자격증명(POW)**
+### **자격증명(POW)**
 
 채굴(마이닝)을 할 때 쉽게 블럭생성을 하지 못하도록
 
@@ -134,7 +134,7 @@ http 는 block 과 chain 을 보내주는 용도 (조회용)
 
 웹소켓이 데이터를 주고받는 용도
 
-**16진수**
+### **16진수**
 
 8 bit = 1 byte = 2 nibble
 
@@ -149,13 +149,13 @@ http 는 block 과 chain 을 보내주는 용도 (조회용)
 32 byte = 64글자
 
 
-**지갑검증**
+### **지갑검증**
 
 블록체인에서는 공개키를 가지고 검증하고
 
 지갑에서는 개인키를 가지고 검증한다.
 
-**지갑 구현하는데 필요한 요소**
+### **지갑 구현하는데 필요한 요소**
 
 
 tx
