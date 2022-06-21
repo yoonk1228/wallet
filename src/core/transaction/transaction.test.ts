@@ -18,5 +18,4 @@ describe('Transaction 생성', () => {
         const utxo = transaction.createUTXO()
         console.log(utxo)
     })
-    it('Transaction Hash Check', () => {})
 })

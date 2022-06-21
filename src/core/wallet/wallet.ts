@@ -56,4 +56,17 @@ export class Wallet {
     public getAccount(): string {
         return Buffer.from(this.publicKey).slice(26).toString()
     }
+
+    // account, unspentTxOut[]
+    public static getBalance(_account: string, _UnspentTxOuts: IUnspentTxOut[]): any {
+        console.log('???', _account.length)
+
+        return _UnspentTxOuts
+            .filter((v) => {
+                return v.account === _account
+            })
+            .reduce((acc, utxo) => {
+                return (acc += utxo.amount)
+            }, 0)
+    }
 }

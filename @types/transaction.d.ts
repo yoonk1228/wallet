@@ -8,9 +8,9 @@ declare interface ITxIn {
     signature?: string | undefined
 }
 declare interface ITransaction {
-    hash: string
+    txIns: ITxIn[]
     txOuts: ITxOut[]
-    tsxIns: ITxIn[]
+    hash: string
 }
 declare interface IUnspentTxOut {
     txOutId: string
