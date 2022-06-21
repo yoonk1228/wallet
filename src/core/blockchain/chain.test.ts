@@ -24,7 +24,7 @@ describe('Chain 함수 체크', () => {
         node.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
         node.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
         // console.log(node.getChain())
-        console.log(node.getUnspentTxOuts())
+        // console.log(node.getUnspentTxOuts())
         console.log(
             'b7916d4d449f22bc65eec91ec01e8f98391f6a45 의 총 금액 : ',
             Wallet.getBalance('b7916d4d449f22bc65eec91ec01e8f98391f6a45', node.getUnspentTxOuts()),

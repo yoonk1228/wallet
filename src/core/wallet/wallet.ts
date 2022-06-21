@@ -58,9 +58,7 @@ export class Wallet {
     }
 
     // account, unspentTxOut[]
-    public static getBalance(_account: string, _UnspentTxOuts: IUnspentTxOut[]): any {
-        console.log('???', _account.length)
-
+    public static getBalance(_account: string, _UnspentTxOuts: IUnspentTxOut[]): number {
         return _UnspentTxOuts
             .filter((v) => {
                 return v.account === _account
