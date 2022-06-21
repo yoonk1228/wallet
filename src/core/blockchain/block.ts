@@ -30,9 +30,9 @@ export class Block extends BlockHeader implements IBlock {
     public merkleRoot: string
     public nonce: number
     public difficulty: number
-    public data: string[]
+    public data: ITransaction[]
 
-    constructor(_previousBlock: Block, _data: string[], _adjustmentBlock: Block = _previousBlock) {
+    constructor(_previousBlock: Block, _data: ITransaction[], _adjustmentBlock: Block = _previousBlock) {
         super(_previousBlock) // BlockHeader 자식의 생성자를 참조한다.
 
         const merkleRoot = Block.getMerkleRoot(_data)
@@ -48,6 +48,8 @@ export class Block extends BlockHeader implements IBlock {
     }
 
     public static getMerkleRoot<T>(_data: T[]): string {
+        // Tx.Hash:string -> txIns txOuts 의 모든 string
+        // todo: Transaction Hash 값 구하기
         const merkleTree = merkle('sha256').sync(_data)
         return merkleTree.root() || '0'.repeat(64)
     }
@@ -67,11 +69,10 @@ export class Block extends BlockHeader implements IBlock {
         return SHA256(values).toString()
     }
 
-    public static generateBlock(_previousBlock: Block, _data: string[], _adjustmentBlock: Block): Block {
+    public static generateBlock(_previousBlock: Block, _data: ITransaction[], _adjustmentBlock: Block): Block {
         const generateBlock = new Block(_previousBlock, _data, _adjustmentBlock)
         // TODO : newBlock 은 마이닝이 완료된 블럭
-        const newBlock = Block.findBlock(generateBlock)
-        return newBlock
+        return Block.findBlock(generateBlock)
     }
 
     public static findBlock(_generateBlock: Block): Block {

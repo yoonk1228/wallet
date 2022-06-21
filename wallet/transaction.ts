@@ -8,7 +8,7 @@ interface ITxIn {
     // 보내는 사람의 서명
 }
 interface ITxOut {
-    address: string // 받는 사람
+    account: string // 받는 사람
     amount: number // 받을 양
 }
 interface ITransaction {

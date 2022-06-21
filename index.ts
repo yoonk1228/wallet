@@ -36,7 +36,7 @@ app.get('/chains', (req, res) => {
 // 블록 채굴
 app.post('/mineBlock', (req, res) => {
     const { data } = req.body
-    const newBlock = ws.addBlock(data)
+    const newBlock = ws.miningBlock(data)
     if (newBlock.isError) return res.status(500).json(newBlock.error)
     const msg: Message = {
         type: MessageType.latest_block,

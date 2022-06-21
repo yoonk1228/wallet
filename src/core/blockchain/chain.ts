@@ -1,13 +1,25 @@
 import { Block } from '@core/blockchain/block'
 import { DIFFICULTY_ADJUSTMENT_INTERVAL } from '@core/config'
+import { TxIn } from '@core/transaction/txin'
+import { Transaction } from '@core/transaction/transaction'
+import { TxOut } from '@core/transaction/txout'
+import { unspentTxOut } from '@core/transaction/unspentTxOut'
 
 export class Chain {
     private blockchain: Block[]
-    // private unspentTxOuts: unspentTxOut[]
+    private unspentTxOuts: unspentTxOut[]
 
     constructor() {
         this.blockchain = [Block.getGENESIS()]
-        // this.unspentTxOuts = []
+        this.unspentTxOuts = []
+    }
+
+    public getUnspentTxOuts(): unspentTxOut[] {
+        return this.unspentTxOuts
+    }
+
+    public appendUTXO(utxo: unspentTxOut): void {
+        this.unspentTxOuts.push(utxo)
     }
 
     public getChain(): Block[] {
@@ -22,7 +34,14 @@ export class Chain {
         return this.blockchain[this.blockchain.length - 1]
     }
 
-    public addBlock(_data: string[]): Failable<Block, string> {
+    public miningBlock(_account: string) {
+        // todo: Transaction 만두는 코드 넣고, addBock
+        const txin: ITxIn = new TxIn('', this.getLatestBlock().height + 1)
+        const txout: ITxOut = new TxOut(_account, 50)
+        const transaction: Transaction = new Transaction([txin], [txout])
+        const utxo = transaction.createUTXO()
+    }
+    public addBlock(_data: ITransaction[]): Failable<Block, string> {
         // TODO : 1. 내가 앞으로 생성할 블록의 높이값을 가져올 수 있는가?
         // 현재 높이값 - block interval 햇을때 음수가 나오면, genesisblock 을 보게 만들면 된다.
         // 2. 난이도를 구하기 (difficulty) -> 생성시간이 필요함

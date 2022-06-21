@@ -6,9 +6,9 @@ describe('Block 검증', () => {
     let newBlock: Block
     const genesisBlock: Block = GENESIS
     it('블록생성', () => {
-        const data = ['Block #2']
+        const data: ITransaction[] = []
         // newBlock = new Block(genesisBlock, data)
-        newBlock = Block.generateBlock(genesisBlock, data)
+        newBlock = Block.generateBlock(GENESIS, data, GENESIS)
         const newBlock2 = new Block(newBlock, data)
         // console.log('newBlock', newBlock)
         // console.log('newBlock2', newBlock2)
