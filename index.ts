@@ -67,7 +67,11 @@ app.post('/sendTransaction', (req, res) => {
     // Wallet.sendTransaction()
     try {
         const receivedTx: ReceivedTx = req.body
-        Wallet.sendTransaction(receivedTx)
+        console.log(receivedTx)
+        Wallet.sendTransaction(receivedTx, ws.getUnspentTxOuts())
+        // txIns
+        // txOuts
+        // utxo
     } catch (e) {
         if (e instanceof Error) console.error(e.message)
     }

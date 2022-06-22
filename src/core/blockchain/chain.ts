@@ -4,6 +4,7 @@ import { TxIn } from '@core/transaction/txin'
 import { Transaction } from '@core/transaction/transaction'
 import { TxOut } from '@core/transaction/txout'
 import { unspentTxOut } from '@core/transaction/unspentTxOut'
+import { TranscodeEncoding } from 'buffer'
 
 export class Chain {
     private blockchain: Block[]
@@ -84,6 +85,17 @@ export class Chain {
             if (isValid.isError) return { isError: true, error: isValid.error }
         }
         return { isError: false, value: undefined }
+    }
+
+    updateUTXO(tx: ITransaction) {
+        const consumedTxOuts = tx.txIns
+        const newUnspentTxOuts = tx.txOuts
+        const unspentTxOuts: unspentTxOut[] = this.getUnspentTxOuts()
+        // unspentTxOuts
+        const consumed = tx.txIns.map((txin) => {
+            return new unspentTxOut(txin.txOutId, txin.txOutIndex, '', 0)
+        })
+        const consumedTx = unspentTxOuts.filter((utxo) => consumed.includes(utxo))
     }
 
     replaceChain(_receivedChain: Block[]): Failable<undefined, string> {

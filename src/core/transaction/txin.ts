@@ -8,4 +8,18 @@ export class TxIn {
         this.txOutIndex = _txOutIndex
         this.signature = _signature
     }
+
+    static createTxIns(_receivedTx: any, _myUTXO: IUnspentTxOut[]) {
+        let sum = 0
+        let txIns: TxIn[] = []
+        for (let i = 0; i < _myUTXO.length; i++) {
+            const { txOutId, txOutIndex, amount } = _myUTXO[i]
+            const item: TxIn = new TxIn(txOutId, txOutIndex, _receivedTx.signature)
+            txIns.push(item)
+            sum += amount
+            if (sum >= _receivedTx.amount) return { sum, txIns }
+        }
+        // for (const utxo of _myUTXO) {}
+        return { sum, txIns }
+    }
 }

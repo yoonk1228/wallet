@@ -62,13 +62,13 @@ app.post('/sendTransaction', async (req, res) => {
     // 보낼사람: 공개키, 받는사람: 계정, 보낼양, 서명
     const txObject = {
         sender: publicKey,
-        received: received,
-        amount: amount,
+        received,
+        amount,
         signature,
     }
     console.log('txObject: ', txObject)
     const response = await request.post('/sendTransaction', txObject)
-    console.log(response.data)
+    console.log('localhost:3000/sendTransaction', response.data)
 
     res.json({})
 })

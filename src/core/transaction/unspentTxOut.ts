@@ -1,3 +1,5 @@
+import { Transaction } from '@core/transaction/transaction'
+
 export class unspentTxOut {
     public txOutId: string
     public txOutIndex: number
@@ -9,5 +11,12 @@ export class unspentTxOut {
         this.txOutIndex = _txOutIndex
         this.account = _account
         this.amount = _amount
+    }
+
+    static getMyUnspentTxOuts(_account: string, unspentTxOuts: unspentTxOut[]): unspentTxOut[] {
+        // 전체 utxo, account
+        return unspentTxOuts.filter((utxo: unspentTxOut) => {
+            return utxo.account === _account
+        })
     }
 }

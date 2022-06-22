@@ -43,9 +43,10 @@ export class Wallet {
             received,
             amount,
         } = _obj
-
+        console.log('과연?', [publicKey, received, amount])
         // hash
         const hash: string = SHA256([publicKey, received, amount].join('')).toString()
+        console.log('해시값은??', hash)
 
         // privateKey
         const privateKey: string = Wallet.getWalletPrivateKey(account)

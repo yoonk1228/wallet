@@ -26,4 +26,16 @@ export class Transaction {
             return new unspentTxOut(this.hash, i, _txout.account, _txout.amount)
         })
     }
+
+    static createTransaction(_receivedTx: any, _myUTXO: unspentTxOut[]): Transaction {
+        // todo: _receivedTx 타입 any 수정
+        // todo: 본인에게 해당하는 utxo 를 가지고 txin[] 을 만든다.
+        const { sum, txIns } = TxIn.createTxIns(_receivedTx, _myUTXO)
+        // txin -> txout[]
+        const txOuts: TxOut[] = TxOut.createTxOuts(sum, _receivedTx)
+        // new Transaction()
+        const tx = new Transaction(txIns, txOuts)
+        console.log('만들어진 tx (createTransaction()):', tx)
+        return tx
+    }
 }
