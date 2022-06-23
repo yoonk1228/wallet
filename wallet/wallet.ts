@@ -27,7 +27,7 @@ export class Wallet {
 
     public static createWallet(_myWallet: Wallet) {
         const filename = path.join(dir, _myWallet.account)
-        const filecontent = _myWallet.getPrivateKey()
+        const filecontent = _myWallet.privateKey
         // 파일명 : account
         // 내용 : privateKey
         fs.writeFileSync(filename, filecontent)
@@ -59,7 +59,7 @@ export class Wallet {
     public static getWalletPrivateKey(_account: string): string {
         const filepath = path.join(dir, _account)
         const filecontent = fs.readFileSync(filepath)
-        console.log(filecontent.toString())
+        console.log('fileContent:', filecontent.toString())
         return filecontent.toString()
     }
 

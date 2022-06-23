@@ -7,7 +7,7 @@ const app = express()
 
 const userid = process.env.USERID || 'web7722'
 const userpw = process.env.USERPW || '1234'
-const baseurl = process.env.BASEURL || 'http:/localhost:3000'
+const baseURL = process.env.BASEURL || 'http://localhost:3000'
 
 const baseAuth = Buffer.from(userid + ':' + userpw).toString('base64')
 
@@ -27,7 +27,7 @@ nunjucks.configure('views', {
 })
 
 app.get('/', (req, res) => {
-    res.render('index', { data: new Wallet() })
+    res.render('index')
 })
 
 app.post('/newWallet', (req, res) => {
