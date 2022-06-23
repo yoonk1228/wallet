@@ -60,8 +60,11 @@ export class Chain {
         // todo: Transaction 만두는 코드 넣고, addBock
         const txIn: ITxIn = new TxIn('', this.getLatestBlock().height + 1)
         const txOut: ITxOut = new TxOut(_account, 50)
+        console.log('txOut', txOut)
         const transaction: Transaction = new Transaction([txIn], [txOut])
+        console.log('transaction', transaction)
         const utxo = transaction.createUTXO()
+        console.log('utxo', utxo)
         this.appendUTXO(utxo)
         return this.addBlock([transaction, ...this.getTransactionPool()])
     }

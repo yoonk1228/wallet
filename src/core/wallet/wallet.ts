@@ -54,15 +54,14 @@ export class Wallet {
         if (myWallet.balance < _receivedTx.amount) throw new Error('잔액이 모자랍니다')
         // todo: Transaction 을 만드는 과정
         const myUTXO: unspentTxOut[] = unspentTxOut.getMyUnspentTxOuts(myWallet.account, _unspentTxOuts)
+        console.log('sendTransaction 할때 myUTXO', myUTXO)
         return Transaction.createTransaction(_receivedTx, myUTXO)
     }
 
     public static getVerify(_receivedTx: ReceivedTx): Failable<undefined, string> {
         const { sender, received, amount, signature } = _receivedTx
         const data: any[] = [sender, received, amount]
-        console.log('과연?', data)
         const hash: string = SHA256(data.join('')).toString()
-        console.log('해시값은??', hash)
         // todo : 타원곡선 알고리즘 사용 (검증해야되니까)
         const keyPair = ec.keyFromPublic(sender, 'hex')
         const isVerify = keyPair.verify(hash, signature)

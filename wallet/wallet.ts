@@ -59,7 +59,6 @@ export class Wallet {
     public static getWalletPrivateKey(_account: string): string {
         const filepath = path.join(dir, _account)
         const filecontent = fs.readFileSync(filepath)
-        console.log('fileContent:', filecontent.toString())
         return filecontent.toString()
     }
 

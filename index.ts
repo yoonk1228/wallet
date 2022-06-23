@@ -66,6 +66,7 @@ app.get('/addPeers', (req, res) => {
 app.post('/getBalance', (req, res) => {
     const { account } = req.body
     console.log('/getBalance account:', account)
+    console.log('/getBalance UTXO:', ws.getUnspentTxOuts())
     const balance = Wallet.getBalance(account, ws.getUnspentTxOuts())
     console.log(balance)
 
@@ -75,7 +76,6 @@ app.post('/getBalance', (req, res) => {
 })
 
 app.post('/sendTransaction', (req, res) => {
-    console.log(req.body)
     // Wallet.sendTransaction()
     try {
         const receivedTx: ReceivedTx = req.body

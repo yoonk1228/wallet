@@ -62,6 +62,7 @@
                 received: e.target.received.value,
                 amount: parseInt(e.target.amount.value)
             }
+            console.log(data)
             const response = await axios.post('/sendTransaction',data)
         }
         const view = (wallet) => {
@@ -86,7 +87,7 @@
             const response = await axios.post('/walletList',null)
             walletList.innerHTML = response.data.map((account) => {
                 console.log('월렛리스트 res', account)
-                return `<li onClick="getView('${account}')">${account}</li>`
+                return `<li onClick="getView('${account}')">account: ${account}</li>`
             })
         }
         walletBtn.addEventListener('click',createWallet)
