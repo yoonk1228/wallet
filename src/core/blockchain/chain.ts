@@ -4,15 +4,16 @@ import { TxIn } from '@core/transaction/txin'
 import { Transaction } from '@core/transaction/transaction'
 import { TxOut } from '@core/transaction/txout'
 import { unspentTxOut } from '@core/transaction/unspentTxOut'
-import { TranscodeEncoding } from 'buffer'
 
 export class Chain {
     private blockchain: Block[]
     private unspentTxOuts: unspentTxOut[]
+    private transactionPool: ITransaction[]
 
     constructor() {
         this.blockchain = [Block.getGENESIS()]
         this.unspentTxOuts = []
+        this.transactionPool = []
     }
 
     public getUnspentTxOuts(): unspentTxOut[] {
@@ -35,14 +36,34 @@ export class Chain {
         return this.blockchain[this.blockchain.length - 1]
     }
 
+    public getTransactionPool(): ITransaction[] {
+        return this.transactionPool
+    }
+
+    public appendTransactionPool(_Transaction: ITransaction): void {
+        this.transactionPool.push(_Transaction)
+    }
+
+    public updateTransactionPool(_newBlock: IBlock): void {
+        //상태만 변하는 코드라 리턴값은 없어서 :void
+        let txPool: ITransaction[] = this.getTransactionPool()
+        _newBlock.data.forEach((tx: ITransaction) => {
+            txPool = txPool.filter((txp) => {
+                return txp.hash !== tx.hash
+            })
+        })
+
+        this.transactionPool = txPool
+    }
+
     public miningBlock(_account: string): Failable<Block, string> {
         // todo: Transaction 만두는 코드 넣고, addBock
-        const txin: ITxIn = new TxIn('', this.getLatestBlock().height + 1)
-        const txout: ITxOut = new TxOut(_account, 50)
-        const transaction: Transaction = new Transaction([txin], [txout])
+        const txIn: ITxIn = new TxIn('', this.getLatestBlock().height + 1)
+        const txOut: ITxOut = new TxOut(_account, 50)
+        const transaction: Transaction = new Transaction([txIn], [txOut])
         const utxo = transaction.createUTXO()
         this.appendUTXO(utxo)
-        return this.addBlock([transaction])
+        return this.addBlock([transaction, ...this.getTransactionPool()])
     }
 
     public addBlock(_data: ITransaction[]): Failable<Block, string> {
@@ -57,6 +78,10 @@ export class Chain {
         if (isValid.isError) return { isError: true, error: isValid.error }
 
         this.blockchain.push(newBlock)
+        // block.data.transactions
+        // transactionPool
+        // updateTransactionPool()
+        this.updateTransactionPool(newBlock)
         return { isError: false, value: newBlock }
     }
 
@@ -71,6 +96,10 @@ export class Chain {
         }
         console.log('됨')
         this.blockchain.push(_receivedBlock)
+        _receivedBlock.data.forEach((tx) => {
+            this.updateUTXO(tx)
+        })
+        this.updateTransactionPool(_receivedBlock)
         return { isError: false, value: undefined }
     }
 
@@ -87,15 +116,24 @@ export class Chain {
         return { isError: false, value: undefined }
     }
 
-    updateUTXO(tx: ITransaction) {
-        const consumedTxOuts = tx.txIns
-        const newUnspentTxOuts = tx.txOuts
+    updateUTXO(tx: ITransaction): void {
         const unspentTxOuts: unspentTxOut[] = this.getUnspentTxOuts()
-        // unspentTxOuts
-        const consumed = tx.txIns.map((txin) => {
-            return new unspentTxOut(txin.txOutId, txin.txOutIndex, '', 0)
+
+        const newUnspentTxOuts = tx.txOuts.map((txOut, i) => {
+            return new unspentTxOut(tx.hash, i, txOut.account, txOut.amount)
         })
-        const consumedTx = unspentTxOuts.filter((utxo) => consumed.includes(utxo))
+        // unspentTxOuts
+        this.unspentTxOuts = unspentTxOuts
+            .filter((utxo: unspentTxOut) => {
+                const bool = tx.txIns.find((_v) => {
+                    return _v.txOutId === _v.txOutId && _v.txOutIndex === _v.txOutIndex
+                })
+                // !undefined -> return true(bool)
+                return !bool // 없는 거만 true, 있는거만 false
+            })
+            .concat(newUnspentTxOuts)
+
+        // this.appendTransactionPool(tx)
     }
 
     replaceChain(_receivedChain: Block[]): Failable<undefined, string> {
@@ -121,6 +159,14 @@ export class Chain {
         // 체인을 바꿔주는 코드를 작성하면됨.
         this.blockchain = _receivedChain
 
+        // UTXO
+        // POOL
+        this.blockchain.forEach((_block: IBlock) => {
+            this.updateTransactionPool(_block)
+            _block.data.forEach((_tx) => {
+                this.updateUTXO(_tx)
+            })
+        })
         return { isError: false, value: undefined }
     }
     /*

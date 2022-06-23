@@ -36,7 +36,7 @@
     <button id='wallet_list_btn'>지갑목록 버튼</button>
     <div class='wallet_list2'>
         <ul>
-
+            목록 버튼을 눌러주세요.
         </ul>
     </div>
     <script type="text/javascript">
@@ -76,19 +76,18 @@
             balance.innerHTML = wallet.balance
         }
         const getView = async (account) => {
-            const response = await axios.post(`/wallet/${account}`)
+            const response = await axios.get(`/wallet/${account}`)
+            console.log(response.data)
             view(response.data)
         }
         const getWalletList = async () => {
+
             const walletList = document.querySelector('.wallet_list2 > ul')
             const response = await axios.post('/walletList',null)
-
-            const list = response.data.map((account)=>{
-                console.log ('월렛리스트 res',account)
-                return `<li onClick=getView('${account}')>${account}</li>`
+            walletList.innerHTML = response.data.map((account) => {
+                console.log('월렛리스트 res', account)
+                return `<li onClick="getView('${account}')">${account}</li>`
             })
-
-            walletList.innerHTML = list
         }
         walletBtn.addEventListener('click',createWallet)
         walletListBtn.addEventListener('click',getWalletList)

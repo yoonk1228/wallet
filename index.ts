@@ -62,13 +62,28 @@ app.get('/addPeers', (req, res) => {
         ws.connectToPeer(peer)
     })
 })
+
+app.post('/getBalance', (req, res) => {
+    const { account } = req.body
+    console.log('/getBalance account:', account)
+    const balance = Wallet.getBalance(account, ws.getUnspentTxOuts())
+    console.log(balance)
+
+    res.json({
+        balance,
+    })
+})
+
 app.post('/sendTransaction', (req, res) => {
     console.log(req.body)
     // Wallet.sendTransaction()
     try {
         const receivedTx: ReceivedTx = req.body
         console.log(receivedTx)
-        Wallet.sendTransaction(receivedTx, ws.getUnspentTxOuts())
+        const tx = Wallet.sendTransaction(receivedTx, ws.getUnspentTxOuts())
+
+        ws.appendTransactionPool(tx)
+        ws.updateUTXO(tx)
         // txIns
         // txOuts
         // utxo
@@ -77,6 +92,14 @@ app.post('/sendTransaction', (req, res) => {
     }
     res.json([])
 })
+
+app.get('/transaction_pool', (req, res) => {
+    res.send(ws.getTransactionPool())
+})
+app.get('/unspentTransaction', (req, res) => {
+    res.send(ws.getUnspentTxOuts())
+})
+
 // peer 확인
 app.get('/peers', (req, res) => {
     const sockets = ws.getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort)

@@ -42,11 +42,16 @@ app.post('/walletList', (req, res) => {
 })
 
 // view
-app.post('/wallet/:account', (req, res) => {
+app.get('/wallet/:account', async (req, res) => {
     const { account } = req.params
-    console.log('wallet/:account', account)
-    const privateKey = Wallet.getWalletPrivateKey(account) // privateKey
-    res.json(new Wallet(privateKey))
+    // console.log(account)
+    const privateKey = Wallet.getWalletPrivateKey(account) // private Key
+    const myWallet = new Wallet(privateKey)
+
+    const response = await request.post('/getBalance', { account })
+    console.log(response.data.balance)
+    myWallet.balance = response.data.balance
+    res.json(myWallet)
 })
 
 // sendTransaction

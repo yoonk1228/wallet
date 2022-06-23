@@ -15,6 +15,7 @@ export class Wallet {
     public balance: number
 
     constructor(_privateKey: string = '') {
+        // this.privateKey = _privateKey
         this.privateKey = _privateKey || this.getPrivateKey()
         // this.privateKey = this.getPrivateKey()
         this.publicKey = this.getPublicKey()
@@ -58,6 +59,7 @@ export class Wallet {
     public static getWalletPrivateKey(_account: string): string {
         const filepath = path.join(dir, _account)
         const filecontent = fs.readFileSync(filepath)
+        console.log(filecontent.toString())
         return filecontent.toString()
     }
 

@@ -6,7 +6,7 @@ describe('Chain 함수 체크', () => {
     let receivedTx = {
         sender: '030223f0599ed4e9d32367bd4e399dc0ff645d326ea37334c96a465f69644d3e43',
         received: '399dc0ff645d326ea37334c96a465f69644d3e43',
-        amount: 30,
+        amount: 20,
         signature: {
             r: 'a486cc4c9694de1a2ae32dc3b31c12d1c26b3f97313f9eda486d24089e8ef9e8',
             s: '9fc39dd293c2096086582539c47497d399b3ed6c0b504d2f07d615163210e1ca',
@@ -27,27 +27,42 @@ describe('Chain 함수 체크', () => {
         //     ws.miningBlock('')
         // }
         ws.miningBlock('399dc0ff645d326ea37334c96a465f69644d3e43')
-        // ws.miningBlock('399dc0ff645d326ea37334c96a465f69644d3e43')
-        // ws.miningBlock('399dc0ff645d326ea37334c96a465f69644d3e43')
-        // ws.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
-        // ws.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
-        // ws.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
+        ws.miningBlock('399dc0ff645d326ea37334c96a465f69644d3e43')
+        ws.miningBlock('399dc0ff645d326ea37334c96a465f69644d3e43')
+        ws.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
+        ws.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
+        ws.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
         // console.log(ws.getChain())
         // console.log(ws.getUnspentTxOuts())
-        console.log(
-            '399dc0ff645d326ea37334c96a465f69644d3e43 의 총 금액 : ',
-            Wallet.getBalance('399dc0ff645d326ea37334c96a465f69644d3e43', ws.getUnspentTxOuts()),
-        )
+        // console.log(
+        //     '399dc0ff645d326ea37334c96a465f69644d3e43 의 총 금액 : ',
+        //     Wallet.getBalance('399dc0ff645d326ea37334c96a465f69644d3e43', ws.getUnspentTxOuts()),
+        // )
     })
     it('sendTransaction 검증', () => {
         console.log('트랜잭션 검증?')
         try {
             const tx = Wallet.sendTransaction(receivedTx, ws.getUnspentTxOuts())
-            ws.updateUTXO(tx)
+            // ws.updateUTXO(tx)
             // Transaction 내용 가지고 UTXO 를 최신화 하기. updateUTXO
+            console.log('updateUTXO 전에 확인', ws.getUnspentTxOuts())
+
+            ws.appendTransactionPool(tx)
+            ws.updateUTXO(tx)
+
+            console.log('updateUTXO 후에 확인', ws.getUnspentTxOuts())
+            console.log(ws.getTransactionPool())
         } catch (e) {
             if (e instanceof Error) console.log(e.message)
         }
+    })
+    it('채굴 테스트', () => {
+        try {
+            ws.miningBlock('b7916d4d449f22bc65eec91ec01e8f98391f6a45')
+            console.log('채굴 테스트 하고 TransactionPool 찍기', ws.getTransactionPool())
+            console.log(ws.getChain()) // block : 7
+            console.log(ws.getChain()[6]) // block data -> transaction 2개
+        } catch (e) {}
     })
     it('트랜잭션 검증', () => {
         // todo: 지갑 -> Block Server
